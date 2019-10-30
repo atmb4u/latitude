@@ -535,11 +535,10 @@ export default function NewTable<T>({
   // const isItemLoaded = (index: number) =>
   //   !hasNextPage || index < flattenedRows.length;
 
-  const width = columnDefinitions.reduce((sum, cell) => sum + cell.width, 0) + columnDefinitions.length*40
+  const width = columnDefinitions.reduce((sum, cell) => sum + cell.width, 0) + columnDefinitions.length * 40;
   return (
     <div style={{overflow: "scroll", maxHeight: "100%"}}>
       <div style={{width}}>
-        <HeaderRow columns={columnDefinitions} />
         <table style={{width: "100%", tableLayout: "fixed"}}>
           <HeaderRow columns={columnDefinitions} />
           <tbody>
@@ -701,51 +700,51 @@ export default function NewTable<T>({
   // );
 }
 
-// function ColumnCustomization<T>({
-//   columnDefinitions,
-//   visibleColumnIds,
-//   onVisibleColumnIdsChange,
-// }: {|
-//   +columnDefinitions: $ReadOnlyArray<ColumnDefinition<T>>,
-//   +visibleColumnIds: $ReadOnlyArray<string>,
-//   +onVisibleColumnIdsChange: ($ReadOnlyArray<string>) => void,
-// |}) {
-//   return (
-//     <div className={css(styles.columnCustomizationContainer)}>
-//       <PopupWithClickAway>
-//         {(Target, Popup, {openPopup}) => (
-//           <>
-//             <Target>
-//               <IconButton
-//                 size="s"
-//                 kind="bare"
-//                 iconName="add"
-//                 type="button"
-//                 onClick={openPopup}
-//               />
-//             </Target>
-//             <Popup placement="bottom-end">
-//               <div className={css(styles.columnCustomizationPopup)}>
-//                 <div>
-//                   <CheckboxList
-//                     values={visibleColumnIds}
-//                     options={columnDefinitions.map(cd => ({
-//                       label: cd.header,
-//                       value: cd.id,
-//                     }))}
-//                     onChange={onVisibleColumnIdsChange}
-//                     gap={8}
-//                     showSelectAllOption={true}
-//                   />
-//                 </div>
-//               </div>
-//             </Popup>
-//           </>
-//         )}
-//       </PopupWithClickAway>
-//     </div>
-//   );
-// }
+function ColumnCustomization<T>({
+  columnDefinitions,
+  visibleColumnIds,
+  onVisibleColumnIdsChange,
+}: {|
+  +columnDefinitions: $ReadOnlyArray<ColumnDefinition<T>>,
+  +visibleColumnIds: $ReadOnlyArray<string>,
+  +onVisibleColumnIdsChange: ($ReadOnlyArray<string>) => void,
+|}) {
+  return (
+    <div className={css(styles.columnCustomizationContainer)}>
+      <PopupWithClickAway>
+        {(Target, Popup, {openPopup}) => (
+          <>
+            <Target>
+              <IconButton
+                size="s"
+                kind="bare"
+                iconName="add"
+                type="button"
+                onClick={openPopup}
+              />
+            </Target>
+            <Popup placement="bottom-end">
+              <div className={css(styles.columnCustomizationPopup)}>
+                <div>
+                  <CheckboxList
+                    values={visibleColumnIds}
+                    options={columnDefinitions.map(cd => ({
+                      label: cd.header,
+                      value: cd.id,
+                    }))}
+                    onChange={onVisibleColumnIdsChange}
+                    gap={8}
+                    showSelectAllOption={true}
+                  />
+                </div>
+              </div>
+            </Popup>
+          </>
+        )}
+      </PopupWithClickAway>
+    </div>
+  );
+}
 
 function HeaderRow<T>({
   columns,
@@ -1041,6 +1040,19 @@ function Row<T>({
 //     </Clickable>
 //   );
 // }
+
+export function withColumnCustomization(WrappedTable: NewTable) {
+  return function WithColumnCustomization({columnDefinitions, initialHiddenColumns = [], ...props}) {
+    const [visibleColumnIds, setVisibleColumnIds] = React.useState(columnDefinitions.map(({id}) => id).filter(id => !initialHiddenColumns.includes(id)));
+    const filteredColumnDefinitions = columnDefinitions.filter(({id}) => visibleColumnIds.includes(id));
+    return (
+      <div style={{position: 'relative', overflow: 'scroll', maxHeight: '100%'}}>
+        <ColumnCustomization columnDefinitions={columnDefinitions} visibleColumnIds={visibleColumnIds} onVisibleColumnIdsChange={setVisibleColumnIds}/>
+        <WrappedTable columnDefinitions={filteredColumnDefinitions} {...props} />
+      </div>
+      )
+  }
+}
 
 const styles = StyleSheet.create({
   table: {

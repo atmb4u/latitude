@@ -15,7 +15,9 @@ import TextCell from "../../table/TextCell";
 import InteractableCell from "../../table/InteractableCell";
 import Text from "../../Text";
 import NotificationModal from "../../modal/NotificationModal";
-import NewTable from "../../table/NewTable";
+import NewTable, {withColumnCustomization} from "../../table/NewTable";
+
+const ColumnCustomizationTable = withColumnCustomization(NewTable);
 
 const columnDefinitions = [
   {
@@ -179,7 +181,19 @@ const ColumnCustomizationHoist = () => {
       pinnedColumns={pinnedColumns}
     />
   );
-  return <div className={css(styles.container)}>{table}</div>;
+  return (
+    <div className={css(styles.container)}>
+      <div style={{height: 400, marginBottom: 100}}>
+        {table}
+      </div>
+      <div style={{height: 400, marginBottom: 100}}>
+        <ColumnCustomizationTable data={data.slice(0, 100)}
+                                  columnDefinitions={columnDefinitions}
+                                  getUniqueRowId={data => data.id}
+        />
+      </div>
+    </div>
+  );
 };
 
 const RowClickingHoist = () => {
