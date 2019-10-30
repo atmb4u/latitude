@@ -15,6 +15,7 @@ import TextCell from "../../table/TextCell";
 import InteractableCell from "../../table/InteractableCell";
 import Text from "../../Text";
 import NotificationModal from "../../modal/NotificationModal";
+import NewTable from "../../table/NewTable";
 
 const columnDefinitions = [
   {
@@ -128,13 +129,24 @@ const BasicTableHoist = () => {
 
   return (
     <div className={css(styles.container)}>
-      <Table
-        data={data.slice(0, 100)}
-        columnDefinitions={columnDefinitions}
-        getUniqueRowId={data => data.id}
-        sortBy={sortBy}
-        onSortByChange={setSortBy}
-      />
+      <div style={{height: 400, marginBottom: 100}}>
+        <Table
+          data={data.slice(0, 100)}
+          columnDefinitions={columnDefinitions}
+          getUniqueRowId={data => data.id}
+          sortBy={sortBy}
+          onSortByChange={setSortBy}
+        />
+      </div>
+      <div style={{height: 400}}>
+        <NewTable
+          data={data.slice(0, 100)}
+          columnDefinitions={columnDefinitions}
+          getUniqueRowId={data => data.id}
+          sortBy={sortBy}
+          onSortByChange={setSortBy}
+        />
+      </div>
     </div>
   );
 };
@@ -340,6 +352,75 @@ const InfiniteLoadHoist = () => {
   return <div className={css(styles.container)}>{table}</div>;
 };
 
+import uuid from "uuid/v4";
+
+function HelloCell({row}: {|+row: string|}) {
+  React.useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log("HelloCell mounted");
+  }, []);
+  // eslint-disable-next-line no-console
+  console.log("HelloCell rendered");
+
+  return <div>Hello {row}</div>;
+}
+
+const MemoizedHelloCell = React.memo(HelloCell);
+
+const memoizedColumns: $ReadOnlyArray<ColumnDefinition<string>> = [
+  {
+    id: "helloColumn",
+    header: "Hello",
+    render: row => <MemoizedHelloCell row={row} />,
+    width: 100,
+  },
+];
+
+const nonMemoizedColumns: $ReadOnlyArray<ColumnDefinition<string>> = [
+  {
+    id: "helloColumn",
+    header: "Hello",
+    render: row => <HelloCell row={row} />,
+    width: 100,
+  },
+];
+
+const memoData = ["row 1", "row 2", "row 3"];
+
+function getUniqueRowId(row: string) {
+  return row;
+}
+
+function RerenderTestTable() {
+  const [memoize, setMemoize] = React.useState(false);
+  const [, setUselessState] = React.useState(uuid);
+
+  const columns = memoize ? memoizedColumns : nonMemoizedColumns;
+  const triggerRerender = React.useCallback(() => {
+    setUselessState(uuid());
+  }, [setUselessState]);
+
+  return (
+    <div>
+      <Button onClick={triggerRerender} label="Rerender" />
+      <Button
+        onClick={() => {
+          setMemoize(!memoize);
+        }}
+        label={`Switch to ${memoize ? "non-memoized" : "memoized"}`}
+      />
+
+      <div style={{height: "200px", width: "200px"}}>
+        <Table
+          columnDefinitions={columns}
+          data={memoData}
+          getUniqueRowId={getUniqueRowId}
+        />
+      </div>
+    </div>
+  );
+}
+
 const stories = storiesOf(`${sections.table}/Table`, module);
 
 stories.add("Basic Table", () => <BasicTableHoist />);
@@ -350,7 +431,8 @@ stories.add("Row Aggregation Table", () => <RowAggregationHoist />);
 stories.add("Row Aggregation Selection Table", () => <RowAggregationSelectionHoist />);
 stories.add("Pinned Columns Table", () => <PinnedColumnsHoist />);
 stories.add("Infinite Load Table", () => <InfiniteLoadHoist />);
+stories.add("Rerender Test Table", () => <RerenderTestTable />);
 
 const styles = StyleSheet.create({
-  container: {width: 900, height: 600},
+  container: {width: 900, height: 900},
 });

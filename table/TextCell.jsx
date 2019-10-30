@@ -36,7 +36,7 @@ export default function TextCell({
       title={tooltipText}
     >
       {value ? (
-        <Text overflow="hidden" textOverflow="ellipsis" whiteSpace="nowrap">
+        <Text overflow="hidden" textOverflow="ellipsis" >
           {value}
         </Text>
       ) : null}
@@ -44,7 +44,7 @@ export default function TextCell({
         <Text
           overflow="hidden"
           textOverflow="ellipsis"
-          whiteSpace="nowrap"
+
           color="grey50"
         >
           {secondaryValue}
