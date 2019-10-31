@@ -15,9 +15,10 @@ import TextCell from "../../table/TextCell";
 import InteractableCell from "../../table/InteractableCell";
 import Text from "../../Text";
 import NotificationModal from "../../modal/NotificationModal";
-import NewTable, {withColumnCustomization} from "../../table/NewTable";
+import NewTable, {withColumnCustomization, withRowSelection} from "../../table/NewTable";
 
 const ColumnCustomizationTable = withColumnCustomization(NewTable);
+const RowSelectionTable = withRowSelection(NewTable);
 
 const columnDefinitions = [
   {
@@ -233,6 +234,7 @@ const RowClickingHoist = () => {
 
 const RowSelectionHoist = () => {
   const [selectedRows, setSelectedRows] = React.useState(new Set());
+  const [newTableSelectedRows, setNewTableSelectedRows] = React.useState(new Set());
   const [sortBy, setSortBy] = React.useState({
     columnId: "id",
     direction: "asc",
@@ -250,7 +252,27 @@ const RowSelectionHoist = () => {
       onSortByChange={setSortBy}
     />
   );
-  return <div className={css(styles.container)}>{table}</div>;
+  const newTable = (
+    <RowSelectionTable
+      data={data.slice(0, 100)}
+      columnDefinitions={columnDefinitions}
+      getUniqueRowId={data => data.id}
+      onSelectedRowsChange={setNewTableSelectedRows}
+    />
+  );
+
+  return (
+    <div className={css(styles.container)}>
+      <div style={{height: 400, marginBottom: 100}}>
+        {table}
+        {JSON.stringify(Array.from(selectedRows))}
+      </div>
+      <div style={{height: 400, marginBottom: 100}}>
+        {newTable}
+        {JSON.stringify(Array.from(newTableSelectedRows))}
+      </div>
+    </div>
+  );
 };
 
 const RowAggregationHoist = () => {

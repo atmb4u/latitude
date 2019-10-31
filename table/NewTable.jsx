@@ -21,6 +21,7 @@ import Loader from "../Loader";
 import colors from "../colors";
 import Clickable from "../base_candidate/Clickable";
 import RowContext from "./RowContext";
+import InteractableCell from "./InteractableCell";
 
 export type Style = { [string]: string | number };
 
@@ -1054,6 +1055,29 @@ export function withColumnCustomization(WrappedTable: NewTable) {
         <WrappedTable columnDefinitions={filteredColumnDefinitions} {...props} />
       </div>
       )
+  }
+}
+
+export function withRowSelection(WrappedTable: NewTable) {
+  return function WithRowSelection({columnDefinitions, getUniqueRowId, onSelectedRowsChange, ...props}) {
+    const [selectedRows, setSelectedRows] = React.useState(new Set());
+    const toggleRow = (rowId, isSelected) => {
+      const currentSelectedRows = new Set(selectedRows);
+      isSelected ? currentSelectedRows.add(rowId) : currentSelectedRows.delete(rowId);
+      setSelectedRows(currentSelectedRows);
+      onSelectedRowsChange(currentSelectedRows);
+    };
+    const rowSelectionColumn = {
+      id: "row_selection",
+      header: "",
+      render: row => (
+        <InteractableCell>
+          <Checkbox checked={selectedRows.has(getUniqueRowId(row))} onChange={toggleRow.bind(null, getUniqueRowId(row))}/>
+        </InteractableCell>
+      ),
+      width: 52,
+    };
+    return <WrappedTable columnDefinitions={[rowSelectionColumn, ...columnDefinitions]} getUniqueRowId={getUniqueRowId} {...props}/>
   }
 }
 
