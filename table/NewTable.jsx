@@ -18,10 +18,9 @@ import invariant from "../tools/invariant";
 import Text from "../Text";
 import Icon from "../Icon";
 import Loader from "../Loader";
-import colors from "../styles/colors";
+import colors from "../colors";
 import Clickable from "../base_candidate/Clickable";
 import RowContext from "./RowContext";
-import latitudeColors from "../colors";
 
 export type Style = { [string]: string | number };
 
@@ -420,7 +419,7 @@ export default function NewTable<T>({
         const pin = pinnedColumns.find(({columnId}) => columnId === id);
         return {
           id,
-          Header: () =>
+          Header: () => {}
             // aggregateComparator || comparator ? (
             //   <SortableHeader
             //     key={id}
@@ -438,15 +437,15 @@ export default function NewTable<T>({
             //     tooltipText={tooltipText}
             //   />
             // ) : (
-            <Header
-              key={id}
-              style={{
-                width: width + 2 * COLUMN_PADDING,
-              }}
-              header={header}
-              align={headerAlignment || "left"}
-              tooltipText={tooltipText}
-            />
+            // <Header
+            //   key={id}
+            //   style={{
+            //     width: width + 2 * COLUMN_PADDING,
+            //   }}
+            //   header={header}
+            //   align={headerAlignment || "left"}
+            //   tooltipText={tooltipText}
+            // />
           ,
           Cell: ({row}) => (
             <div
@@ -539,9 +538,13 @@ export default function NewTable<T>({
   return (
     <div style={{overflow: "scroll", maxHeight: "100%"}}>
       <div style={{width}}>
-        <table style={{width: "100%", tableLayout: "fixed"}}>
+        <table style={{width: "100%", tableLayout: "fixed", borderCollapse: 'collapse'}}>
           <HeaderRow columns={columnDefinitions} />
           <tbody>
+          <tr><td colSpan={columnDefinitions.length}>
+            <Row key={`1${getUniqueRowId(data[0])}`} columns={columnDefinitions} data={data[0]}/>
+          </td></tr>
+          <tr><td colSpan={columnDefinitions.length}><div>whatever i want?</div></td></tr>
           {data.map(item => <Row key={getUniqueRowId(item)} columns={columnDefinitions} data={item}/>)}
           </tbody>
         </table>
@@ -759,7 +762,7 @@ function HeaderRow<T>({
 
   return (
     <thead>
-    <tr className={css(styles.headerRow)} style={{paddingLeft: 20}}>
+    <tr className={css(styles.headerRow)}>
       {columns.map(column => (
         <th style={{width: column.width + 40, paddingLeft: 20}} key={column.id}>
           <Text scale="subtext" color="grey50">
@@ -805,46 +808,46 @@ function HeaderRow<T>({
 //   return iconNames[sortDirection || "asc"];
 // }
 
-function Header({
-  style,
-  header,
-  align,
-  tooltipText,
-}: {|
-  +style: Style,
-  +header: React.Node,
-  +align: "left" | "center" | "right",
-  +tooltipText: ?string,
-|}) {
-  return (
-    <div
-      className={css(
-        styles.cell,
-        styles.header,
-        align === "center" && styles.alignCenter,
-        align === "right" && styles.alignRight
-      )}
-      style={style}
-    >
-      {tooltipText != null ? (
-        <Tooltip
-          placement="bottom"
-          overlay={<span className={css(styles.tooltip)}>{tooltipText}</span>}
-        >
-          <div className={css(styles.tooltipHeader)}>
-            <Text scale="subtext" color="grey40">
-              {header}
-            </Text>
-          </div>
-        </Tooltip>
-      ) : (
-        <Text scale="subtext" color="grey50">
-          {header}
-        </Text>
-      )}
-    </div>
-  );
-}
+// function Header({
+//   style,
+//   header,
+//   align,
+//   tooltipText,
+// }: {|
+//   +style: Style,
+//   +header: React.Node,
+//   +align: "left" | "center" | "right",
+//   +tooltipText: ?string,
+// |}) {
+//   return (
+//     <div
+//       className={css(
+//         styles.cell,
+//         styles.header,
+//         align === "center" && styles.alignCenter,
+//         align === "right" && styles.alignRight
+//       )}
+//       style={style}
+//     >
+//       {tooltipText != null ? (
+//         <Tooltip
+//           placement="bottom"
+//           overlay={<span className={css(styles.tooltip)}>{tooltipText}</span>}
+//         >
+//           <div className={css(styles.tooltipHeader)}>
+//             <Text scale="subtext" color="grey40">
+//               {header}
+//             </Text>
+//           </div>
+//         </Tooltip>
+//       ) : (
+//         <Text scale="subtext" color="grey50">
+//           {header}
+//         </Text>
+//       )}
+//     </div>
+//   );
+// }
 
 // function SortableHeader({
 //   style,
@@ -953,7 +956,7 @@ function Row<T>({
   return (
     <tr className={css(styles.row)}>
       {columns.map(column => (
-        <td>{column.render(data)}</td>
+        <td style={{width: column.width + 40, paddingLeft: 20}}>{column.render(data)}</td>
       ))}
     </tr>
   );
@@ -1154,9 +1157,15 @@ const styles = StyleSheet.create({
   },
   row: {
     // display: "flex",
-    backgroundColor: "white",
+    backgroundColor: colors.white,
     borderBottom: `1px solid ${colors.grey30}`,
-    minHeight: 44,
+    borderTop: `1px solid ${colors.grey30}`,
+    // minHeight: 44,
+    ':hover': {
+      backgroundColor: colors.grey10,
+      borderBottom: `1px solid ${colors.grey40}`,
+      borderTop: `1px solid ${colors.grey40}`,
+    }
   },
   columnCustomizationContainer: {
     position: "absolute",
@@ -1192,13 +1201,13 @@ const styles = StyleSheet.create({
     padding: "12px 0px",
   },
   isHighlighted: {
-    backgroundColor: latitudeColors.grey10,
+    backgroundColor: colors.grey10,
   },
   isSelected: {
-    backgroundColor: latitudeColors.grey20,
-    borderBottom: `1px solid ${latitudeColors.grey60}`,
+    backgroundColor: colors.grey20,
+    borderBottom: `1px solid ${colors.grey60}`,
   },
   isNextSelected: {
-    borderBottom: `1px solid ${latitudeColors.grey60}`,
+    borderBottom: `1px solid ${colors.grey60}`,
   },
 });

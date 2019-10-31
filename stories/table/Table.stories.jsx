@@ -325,7 +325,30 @@ const PinnedColumnsHoist = () => {
       onSortByChange={setSortBy}
     />
   );
-  return <div className={css(styles.container)}>{table}</div>;
+  const newTable = (
+    <NewTable
+      data={data.slice(0, 100)}
+      columnDefinitions={columnDefinitions}
+      getUniqueRowId={data => data.id}
+      pinnedColumns={[
+        {columnId: "id", align: "left"},
+        {columnId: "name", align: "left"},
+        {columnId: "cta", align: "right"},
+      ]}
+      sortBy={sortBy}
+      onSortByChange={setSortBy}
+    />
+  );
+  return (
+    <div className={css(styles.container)}>
+      <div style={{height: 400, marginBottom: 100}}>
+        {table}
+      </div>
+      <div style={{height: 400, marginBottom: 100}}>
+        {newTable}
+      </div>
+    </div>
+  );
 }
 
 const InfiniteLoadHoist = () => {
