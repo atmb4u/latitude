@@ -15,10 +15,11 @@ import TextCell from "../../table/TextCell";
 import InteractableCell from "../../table/InteractableCell";
 import Text from "../../Text";
 import NotificationModal from "../../modal/NotificationModal";
-import NewTable, {withColumnCustomization, withRowSelection} from "../../table/NewTable";
+import NewTable, {withColumnCustomization, withRowSelection, withSorting} from "../../table/NewTable";
 
 const ColumnCustomizationTable = withColumnCustomization(NewTable);
 const RowSelectionTable = withRowSelection(NewTable);
+const SortingTable = withSorting(NewTable);
 
 const columnDefinitions = [
   {
@@ -143,6 +144,36 @@ const BasicTableHoist = () => {
       </div>
       <div style={{height: 400}}>
         <NewTable
+          data={data.slice(0, 100)}
+          columnDefinitions={columnDefinitions}
+          getUniqueRowId={data => data.id}
+          sortBy={sortBy}
+          onSortByChange={setSortBy}
+        />
+      </div>
+    </div>
+  );
+};
+
+const TableSortHoist = () => {
+  const [sortBy, setSortBy] = React.useState({
+    columnId: "id",
+    direction: "asc",
+  });
+
+  return (
+    <div className={css(styles.container)}>
+      <div style={{height: 400, marginBottom: 100}}>
+        <Table
+          data={data.slice(0, 100)}
+          columnDefinitions={columnDefinitions}
+          getUniqueRowId={data => data.id}
+          sortBy={sortBy}
+          onSortByChange={setSortBy}
+        />
+      </div>
+      <div style={{height: 400}}>
+        <SortingTable
           data={data.slice(0, 100)}
           columnDefinitions={columnDefinitions}
           getUniqueRowId={data => data.id}
@@ -483,6 +514,7 @@ function RerenderTestTable() {
 const stories = storiesOf(`${sections.table}/Table`, module);
 
 stories.add("Basic Table", () => <BasicTableHoist />);
+stories.add("Sorting Table", () => <TableSortHoist />);
 stories.add("Column Customization Table", () => <ColumnCustomizationHoist />);
 stories.add("Row Clicking Table", () => <RowClickingHoist />);
 stories.add("Row Selection Table", () => <RowSelectionHoist />);

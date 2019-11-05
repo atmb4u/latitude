@@ -402,91 +402,91 @@ export default function NewTable<T>({
   //   width: 52,
   // };
 
-  const columns = [
-    // ...(rowAggregationEnabled ? [rowExpansionColumn] : []),
-    // ...(rowSelectionEnabled ? [rowSelectionColumn] : []),
-    ...visibleColumnDefinitions.map(
-      ({
-        id,
-        header,
-        render,
-        renderAggregate,
-        width,
-        headerAlignment,
-        comparator,
-        aggregateComparator,
-        tooltipText,
-      }) => {
-        const pin = pinnedColumns.find(({columnId}) => columnId === id);
-        return {
-          id,
-          Header: () => {}
-            // aggregateComparator || comparator ? (
-            //   <SortableHeader
-            //     key={id}
-            //     style={{
-            //       width: width + 2 * COLUMN_PADDING,
-            //     }}
-            //     onSortDirectionChange={direction =>
-            //       onSortByChange(direction ? {columnId: id, direction} : null)
-            //     }
-            //     sortDirection={
-            //       sortBy && sortBy.columnId === id ? sortBy.direction : null
-            //     }
-            //     header={header}
-            //     align={headerAlignment || "left"}
-            //     tooltipText={tooltipText}
-            //   />
-            // ) : (
-            // <Header
-            //   key={id}
-            //   style={{
-            //     width: width + 2 * COLUMN_PADDING,
-            //   }}
-            //   header={header}
-            //   align={headerAlignment || "left"}
-            //   tooltipText={tooltipText}
-            // />
-          ,
-          Cell: ({row}) => (
-            <div
-              key={id}
-              className={css(styles.cell)}
-              style={{
-                width: width + 2 * COLUMN_PADDING,
-              }}
-            >
-              {render(row)}
-            </div>
-          ),
-          AggregateCell: ({rows}) => (
-            <div
-              key={id}
-              className={css(styles.cell)}
-              style={{
-                width: width + 2 * COLUMN_PADDING,
-              }}
-            >
-              {renderAggregate ? renderAggregate(rows) : render(rows[0])}
-            </div>
-          ),
-          pinned: pin ? pin.align : null,
-          width: width + 2 * COLUMN_PADDING,
-        };
-      }
-    ),
-  ];
+  // const columns = [
+  //   // ...(rowAggregationEnabled ? [rowExpansionColumn] : []),
+  //   // ...(rowSelectionEnabled ? [rowSelectionColumn] : []),
+  //   ...visibleColumnDefinitions.map(
+  //     ({
+  //       id,
+  //       header,
+  //       render,
+  //       renderAggregate,
+  //       width,
+  //       headerAlignment,
+  //       comparator,
+  //       aggregateComparator,
+  //       tooltipText,
+  //     }) => {
+  //       const pin = pinnedColumns.find(({columnId}) => columnId === id);
+  //       return {
+  //         id,
+  //         Header: () => {}
+  //           // aggregateComparator || comparator ? (
+  //           //   <SortableHeader
+  //           //     key={id}
+  //           //     style={{
+  //           //       width: width + 2 * COLUMN_PADDING,
+  //           //     }}
+  //           //     onSortDirectionChange={direction =>
+  //           //       onSortByChange(direction ? {columnId: id, direction} : null)
+  //           //     }
+  //           //     sortDirection={
+  //           //       sortBy && sortBy.columnId === id ? sortBy.direction : null
+  //           //     }
+  //           //     header={header}
+  //           //     align={headerAlignment || "left"}
+  //           //     tooltipText={tooltipText}
+  //           //   />
+  //           // ) : (
+  //           // <Header
+  //           //   key={id}
+  //           //   style={{
+  //           //     width: width + 2 * COLUMN_PADDING,
+  //           //   }}
+  //           //   header={header}
+  //           //   align={headerAlignment || "left"}
+  //           //   tooltipText={tooltipText}
+  //           // />
+  //         ,
+  //         Cell: ({row}) => (
+  //           <div
+  //             key={id}
+  //             className={css(styles.cell)}
+  //             style={{
+  //               width: width + 2 * COLUMN_PADDING,
+  //             }}
+  //           >
+  //             {render(row)}
+  //           </div>
+  //         ),
+  //         AggregateCell: ({rows}) => (
+  //           <div
+  //             key={id}
+  //             className={css(styles.cell)}
+  //             style={{
+  //               width: width + 2 * COLUMN_PADDING,
+  //             }}
+  //           >
+  //             {renderAggregate ? renderAggregate(rows) : render(rows[0])}
+  //           </div>
+  //         ),
+  //         pinned: pin ? pin.align : null,
+  //         width: width + 2 * COLUMN_PADDING,
+  //       };
+  //     }
+  //   ),
+  // ];
 
-  const rowWidth = columns.reduce(
-    (sum, cell) => sum + cell.width,
-    FIRST_COLUMN_PADDING +
-    (columns.find(({pinned}) => pinned === "left")
-      ? FIRST_COLUMN_PADDING + PINNED_COLUMN_BORDER_WIDTH
-      : 0) +
-    (columns.find(({pinned}) => pinned === "right")
-      ? FIRST_COLUMN_PADDING + PINNED_COLUMN_BORDER_WIDTH
-      : 0)
-  );
+  // const rowWidth = columns.reduce(
+  //   (sum, cell) => sum + cell.width,
+  //   FIRST_COLUMN_PADDING +
+  //   (columns.find(({pinned}) => pinned === "left")
+  //     ? FIRST_COLUMN_PADDING + PINNED_COLUMN_BORDER_WIDTH
+  //     : 0) +
+  //   (columns.find(({pinned}) => pinned === "right")
+  //     ? FIRST_COLUMN_PADDING + PINNED_COLUMN_BORDER_WIDTH
+  //     : 0)
+  // );
 
   // const innerElementType = React.forwardRef(({children, ...rest}, ref) => (
   //   <div ref={ref} {...rest}>
@@ -542,10 +542,11 @@ export default function NewTable<T>({
         <table style={{width: "100%", tableLayout: "fixed", borderCollapse: 'collapse'}}>
           <HeaderRow columns={columnDefinitions} />
           <tbody>
-          <tr><td colSpan={columnDefinitions.length}>
-            <Row key={`1${getUniqueRowId(data[0])}`} columns={columnDefinitions} data={data[0]}/>
-          </td></tr>
-          <tr><td colSpan={columnDefinitions.length}><div>whatever i want?</div></td></tr>
+          {/*this was just to prove column spacing works*/}
+          {/*<tr><td colSpan={columnDefinitions.length}>*/}
+          {/*  <Row key={`1${getUniqueRowId(data[0])}`} columns={columnDefinitions} data={data[0]}/>*/}
+          {/*</td></tr>*/}
+          {/*<tr><td colSpan={columnDefinitions.length}><div>whatever i want?</div></td></tr>*/}
           {data.map(item => <Row key={getUniqueRowId(item)} columns={columnDefinitions} data={item}/>)}
           </tbody>
         </table>
@@ -766,9 +767,12 @@ function HeaderRow<T>({
     <tr className={css(styles.headerRow)}>
       {columns.map(column => (
         <th style={{width: column.width + 40, paddingLeft: 20}} key={column.id}>
-          <Text scale="subtext" color="grey50">
-            {column.header}
-          </Text>
+          {
+            column.headerCell ? column.headerCell : <Text scale="subtext" color="grey50">
+              {column.header}
+            </Text>
+          }
+
         </th>
       ))}
     </tr>
@@ -1079,6 +1083,69 @@ export function withRowSelection(WrappedTable: NewTable) {
     };
     return <WrappedTable columnDefinitions={[rowSelectionColumn, ...columnDefinitions]} getUniqueRowId={getUniqueRowId} {...props}/>
   }
+}
+
+export function withSorting(WrappedTable: NewTable) {
+  return function WithSorting({data, columnDefinitions, ...props}) {
+    // could maybe pull this all into a hook for people to use with table
+    const [sortedData, setSortedData] = React.useState(data);
+    const [sortDirection, setSortDirection] = React.useState(null);
+    const [sortedColumn, setSortedColumn] = React.useState(null);
+
+    const columnsWithSortableHeaders = columnDefinitions.map(columnDefinition =>
+      ({
+        ...columnDefinition,
+        headerCell:
+          <SortableHeader
+            id={columnDefinition.id}
+            text={columnDefinition.header}
+            sortDirection={columnDefinition.id === sortedColumn ? sortDirection : null}
+            setSortedColumn={id => {
+              // i think this could be a hook that does this automatically
+              setSortDirection('asc');
+              setSortedColumn(id);
+              setSortedData(data.sort((a, b) => columnDefinition.comparator(a, b)))
+            }}
+          />
+      }));
+    return <WrappedTable data={sortedData} columnDefinitions={columnsWithSortableHeaders} {...props} />;
+  }
+}
+
+const SortableHeader = ({id, sortDirection, setSortedColumn, text}) => (
+  <Clickable onClick={() => {setSortedColumn(id)}}>
+    <div className={css(styles.cell,
+      styles.header,
+      styles.clickable)}
+    >
+      <Text
+        scale="subtext"
+        weight={sortDirection ? "bold" : "regular"}
+        color={sortDirection ? "grey60" : "grey40"}
+      >
+        {text}
+      </Text>
+      {
+        sortDirection ? <div className={css(styles.headerSortIcon)}>
+          <Icon
+            alignment="center"
+            color="grey60"
+            size="xxxs"
+            iconName={getIcon(sortDirection)}
+          />
+        </div> : null
+      }
+    </div>
+  </Clickable>
+);
+
+function getIcon(sortDirection: "asc" | "desc" | null) {
+  const iconNames = {
+    asc: "up",
+    desc: "down",
+  };
+
+  return iconNames[sortDirection || "asc"];
 }
 
 const styles = StyleSheet.create({
