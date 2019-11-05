@@ -20,6 +20,7 @@ import NewTable, {withColumnCustomization, withRowSelection, withSorting} from "
 const ColumnCustomizationTable = withColumnCustomization(NewTable);
 const RowSelectionTable = withRowSelection(NewTable);
 const SortingTable = withSorting(NewTable);
+const SelectionSortTable = withRowSelection(withSorting(NewTable));
 
 const columnDefinitions = [
   {
@@ -266,6 +267,7 @@ const RowClickingHoist = () => {
 const RowSelectionHoist = () => {
   const [selectedRows, setSelectedRows] = React.useState(new Set());
   const [newTableSelectedRows, setNewTableSelectedRows] = React.useState(new Set());
+  const [selectionSortTableSelectedRows, setSelectionSortTableSelectedRows] = React.useState(new Set());
   const [sortBy, setSortBy] = React.useState({
     columnId: "id",
     direction: "asc",
@@ -292,8 +294,17 @@ const RowSelectionHoist = () => {
     />
   );
 
+  const selectionSortTable = (
+    <SelectionSortTable
+      data={data.slice(0, 100)}
+      columnDefinitions={columnDefinitions}
+      getUniqueRowId={data => data.id}
+      onSelectedRowsChange={setSelectionSortTableSelectedRows}
+    />
+  );
+
   return (
-    <div className={css(styles.container)}>
+    <div className={css(styles.bigContainer)}>
       <div style={{height: 400, marginBottom: 100}}>
         {table}
         {JSON.stringify(Array.from(selectedRows))}
@@ -301,6 +312,10 @@ const RowSelectionHoist = () => {
       <div style={{height: 400, marginBottom: 100}}>
         {newTable}
         {JSON.stringify(Array.from(newTableSelectedRows))}
+      </div>
+      <div style={{height: 400, marginBottom: 100}}>
+        {selectionSortTable}
+        {JSON.stringify(Array.from(selectionSortTableSelectedRows))}
       </div>
     </div>
   );
@@ -526,4 +541,5 @@ stories.add("Rerender Test Table", () => <RerenderTestTable />);
 
 const styles = StyleSheet.create({
   container: {width: 900, height: 900},
+  bigContainer: {width: 900, height: 1400},
 });
