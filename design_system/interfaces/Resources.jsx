@@ -72,7 +72,7 @@ export default function Resources() {
                   <AnchorButton
                     intent="basic"
                     kind="hollow"
-                    href="https://github.com/flexport/design"
+                    href="https://github.com/flexport/latitude"
                     openInNewTab={true}
                     label="Browse the repo"
                   />
