@@ -231,6 +231,7 @@ const ColumnCustomizationHoist = () => {
 
 const RowClickingHoist = () => {
   const [clickedRow, setClickedRow] = React.useState(null);
+  const [newClickedRow, setNewClickedRow] = React.useState(null);
   const [sortBy, setSortBy] = React.useState({
     columnId: "id",
     direction: "asc",
@@ -248,18 +249,44 @@ const RowClickingHoist = () => {
       onRowClick={setClickedRow}
     />
   );
+
+  const newTable = (
+    <NewTable
+      data={data.slice(0, 100)}
+      columnDefinitions={columnDefinitions}
+      getUniqueRowId={data => data.id}
+      rowClickingEnabled={true}
+      clickedRow={newClickedRow}
+      onRowClick={setNewClickedRow}
+    />
+  );
+
   return (
     <div className={css(styles.container)}>
-      {table}
-      {clickedRow ? (
-        <NotificationModal
-          title="Clicked Row"
-          buttons={[]}
-          onRequestClose={() => setClickedRow(null)}
-        >
-          <Text>You clicked the row with id {clickedRow}</Text>
-        </NotificationModal>
-      ) : null}
+      <div style={{height: 400, marginBottom: 100}}>
+        {table}
+        {clickedRow ? (
+          <NotificationModal
+            title="Clicked Row"
+            buttons={[]}
+            onRequestClose={() => setClickedRow(null)}
+          >
+            <Text>You clicked the row with id {clickedRow}</Text>
+          </NotificationModal>
+        ) : null}
+      </div>
+      <div style={{height: 400, marginBottom: 100}}>
+        {newTable}
+        {newClickedRow ? (
+          <NotificationModal
+            title="Clicked Row"
+            buttons={[]}
+            onRequestClose={() => setNewClickedRow(null)}
+          >
+            <Text>You clicked the row with id {newClickedRow}</Text>
+          </NotificationModal>
+        ) : null}
+      </div>
     </div>
   );
 };

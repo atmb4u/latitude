@@ -128,7 +128,7 @@ export default function NewTable<T>({
   loadNextPage = noop,
   rowClickingEnabled = false,
   clickedRow,
-  onRowClick = noop,
+  onRowClick = null,
   rowGroupClickingEnabled = false,
   clickedRowGroup,
   onRowGroupClick = noop,
@@ -182,7 +182,7 @@ export default function NewTable<T>({
   +loadNextPage?: () => mixed,
   +rowClickingEnabled?: boolean,
   +clickedRow?: ?string,
-  +onRowClick?: string => void,
+  +onRowClick?: string => void | null,
   +rowGroupClickingEnabled?: boolean,
   +clickedRowGroup?: ?string,
   +onRowGroupClick?: string => void,
@@ -202,7 +202,10 @@ export default function NewTable<T>({
           {/*  <Row key={`1${getUniqueRowId(data[0])}`} columns={columnDefinitions} data={data[0]}/>*/}
           {/*</td></tr>*/}
           {/*<tr><td colSpan={columnDefinitions.length}><div>whatever i want?</div></td></tr>*/}
-          {data.map(item => <Row key={getUniqueRowId(item)} columns={columnDefinitions} data={item}/>)}
+          {data.map(item => {
+            const rowId = getUniqueRowId(item);
+            return <Row key={rowId} columns={columnDefinitions} data={item} onClick={onRowClick.bind(null, rowId)}/>
+          })}
           </tbody>
         </table>
       </div>
@@ -306,11 +309,13 @@ function Row<T>({
   // const rightPinnedColumns = columns.filter(({pinned}) => pinned === "right");
 
   return (
-    <tr className={css(styles.row)}>
-      {columns.map(column => (
-        <td style={{width: column.width + 40, paddingLeft: 20}}>{column.render(data)}</td>
-      ))}
-    </tr>
+    <Clickable onClick={onClick}>
+      <tr className={css(styles.row)}>
+        {columns.map(column => (
+          <td style={{width: column.width + 40, paddingLeft: 20}}>{column.render(data)}</td>
+        ))}
+      </tr>
+    </Clickable>
   );
 
 }
