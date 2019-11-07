@@ -147,7 +147,7 @@ function FilterLabel({label, selectedText, shyLabel}: FilterLabelProps) {
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
+    display: "inline-flex",
     flexDirection: "row",
     alignItems: "center",
     background: latitudeColors.white,
